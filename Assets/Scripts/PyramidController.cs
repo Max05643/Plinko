@@ -13,6 +13,7 @@ public class PyramidController : MonoBehaviour
         public float blockSize = 1;
         public int startFromRow = 2;
         public GameObject blockPrefab;
+        public GameObject finishBlockPrefab;
     }
 
 
@@ -22,11 +23,30 @@ public class PyramidController : MonoBehaviour
     [SerializeField]
     List<List<GameObject>> blocks = new List<List<GameObject>>();
 
+    List<GameObject> finishBlocks = new List<GameObject>();
+
     public int Height => settings.height;
     public float BlockSize => settings.blockSize;
 
     [ContextMenu("Generate Pyramid")]
     void GeneratePyramid()
+    {
+        GenerateBlocks();
+        GenerateFinishBlocks();
+    }
+
+    void GenerateFinishBlocks()
+    {
+        finishBlocks = new List<GameObject>();
+        for (int i = 0; i <= settings.height + 1; i++)
+        {
+            var block = Instantiate(settings.finishBlockPrefab, transform);
+            block.transform.localPosition = PositionForBlock(settings.height + 1, i);
+            finishBlocks.Add(block);
+        }
+    }
+
+    void GenerateBlocks()
     {
         blocks = new List<List<GameObject>>();
 

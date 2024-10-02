@@ -85,7 +85,6 @@ public class BallController : MonoBehaviour
             lastColumn = currentColumn;
             currentRow++;
         }
-
         return sequence.SetEase(Ease.Linear);
     }
 
