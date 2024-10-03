@@ -4,6 +4,7 @@ using System.Linq;
 using DG.Tweening;
 using UnityEditor;
 using UnityEngine;
+using Zenject;
 
 public class PyramidController : MonoBehaviour
 {
@@ -17,6 +18,12 @@ public class PyramidController : MonoBehaviour
         public GameObject blockPrefab;
         public GameObject finishBlockPrefab;
     }
+
+    [Inject]
+    SoundController soundController;
+
+    [Inject]
+    UIController uiController;
 
 
     [SerializeField]
@@ -34,7 +41,6 @@ public class PyramidController : MonoBehaviour
         GeneratePyramid();
     }
 
-    [ContextMenu("Generate Pyramid")]
     void GeneratePyramid()
     {
         GenerateBlocks();
@@ -89,10 +95,13 @@ public class PyramidController : MonoBehaviour
     public void RegisterBlockReached(int row, int column)
     {
         PlayInteractAnimation(row, column);
+        soundController.PlayClip(2);
     }
     public void RegisterFinishBlockReached(int column)
     {
         PlayFinishAnimation(column);
+        soundController.PlayClip(3);
+        uiController.AddScore();
     }
 
     void PlayInteractAnimation(int row, int column)

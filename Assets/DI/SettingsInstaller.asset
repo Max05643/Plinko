@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: SettingsInstaller
   m_EditorClassIdentifier: 
   animationSettings:
-    animationStepTime: 0.5
+    animationStepTime: 0.2
