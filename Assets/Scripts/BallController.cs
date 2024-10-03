@@ -2,19 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using Zenject;
 
 public class BallController : MonoBehaviour
 {
+    [System.Serializable]
+    public class Settings
+    {
+        [Range(0.1f, 3f)]
+        public float animationStepTime = 0.3f;
+    }
+
     [SerializeField]
     GameObject ballObj;
 
     [SerializeField]
     float ballRadius = 0.5f;
 
-    [SerializeField]
-    float animationStepTime = 0.3f;
+    [Inject]
+    Settings settings;
 
-    [SerializeField]
+    [Inject]
     PyramidController pyramidController;
 
 
@@ -58,12 +66,12 @@ public class BallController : MonoBehaviour
 
         var firstPos = pyramidController.PositionAboveBlock(2, 1) + Vector2.up * ballRadius;
 
-        sequence.Append(ballObj.transform.DOLocalMove(firstPos, animationStepTime / 2).From(startPos).SetEase(Ease.Linear).OnComplete(() =>
+        sequence.Append(ballObj.transform.DOLocalMove(firstPos, settings.animationStepTime / 2).From(startPos).SetEase(Ease.Linear).OnComplete(() =>
         {
             pyramidController.RegisterBlockReached(2, 1);
         }));
 
-        sequence.Append(AddJumpSequence(ballObj.transform, firstPos, 0.2f, animationStepTime, 4));
+        sequence.Append(AddJumpSequence(ballObj.transform, firstPos, 0.2f, settings.animationStepTime, 4));
 
         int lastColumn = 1;
         int currentRow = 2;
@@ -83,15 +91,15 @@ public class BallController : MonoBehaviour
 
 
 
-            sequence.Append(RotateAround(ballObj.transform, pyramidController.PositionForBlock(currentRow, lastColumn), pyramidController.BlockSize + ballRadius, 90f * (lastColumn == currentColumn ? 1 : -1), animationStepTime, Ease.InCirc));
-            sequence.Append(ballObj.transform.DOLocalMove(finalPosition, animationStepTime / 4).SetEase(Ease.Linear).OnComplete(() =>
+            sequence.Append(RotateAround(ballObj.transform, pyramidController.PositionForBlock(currentRow, lastColumn), pyramidController.BlockSize + ballRadius, 90f * (lastColumn == currentColumn ? 1 : -1), settings.animationStepTime, Ease.InCirc));
+            sequence.Append(ballObj.transform.DOLocalMove(finalPosition, settings.animationStepTime / 4).SetEase(Ease.Linear).OnComplete(() =>
             {
                 if (lastRow <= pyramidController.Height)
                     pyramidController.RegisterBlockReached(lastRow, currentColumn);
             }));
 
             if (i < way.Count - 1)
-                sequence.Append(AddJumpSequence(ballObj.transform, finalPosition, 0.2f, animationStepTime, 4));
+                sequence.Append(AddJumpSequence(ballObj.transform, finalPosition, 0.2f, settings.animationStepTime, 4));
 
             lastColumn = currentColumn;
             currentRow++;
