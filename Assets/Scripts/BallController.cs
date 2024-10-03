@@ -25,6 +25,9 @@ public class BallController : MonoBehaviour
     [Inject]
     PyramidController pyramidController;
 
+    [Inject]
+    SoundController soundController;
+
 
     Sequence currentAnimation = null;
 
@@ -137,6 +140,8 @@ public class BallController : MonoBehaviour
         {
             return;
         }
+
+        soundController.PlayClip(1);
 
         var ballWay = GenerateBallWay(pyramidController.Height - 1);
 
