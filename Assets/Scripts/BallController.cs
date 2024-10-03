@@ -58,7 +58,11 @@ public class BallController : MonoBehaviour
 
         var firstPos = pyramidController.PositionAboveBlock(2, 1) + Vector2.up * ballRadius;
 
-        sequence.Append(ballObj.transform.DOLocalMove(firstPos, animationStepTime / 2).From(startPos).SetEase(Ease.Linear));
+        sequence.Append(ballObj.transform.DOLocalMove(firstPos, animationStepTime / 2).From(startPos).SetEase(Ease.Linear).OnComplete(() =>
+        {
+            pyramidController.RegisterBlockReached(2, 1);
+        }));
+
         sequence.Append(AddJumpSequence(ballObj.transform, firstPos, 0.2f, animationStepTime, 4));
 
         int lastColumn = 1;
@@ -73,11 +77,18 @@ public class BallController : MonoBehaviour
                 currentColumn++;
             }
 
-            var finalPosition = pyramidController.PositionAboveBlock(currentRow + 1, currentColumn) + Vector2.up * ballRadius;
+            int lastRow = currentRow + 1;
+
+            var finalPosition = pyramidController.PositionAboveBlock(lastRow, currentColumn) + Vector2.up * ballRadius;
+
 
 
             sequence.Append(RotateAround(ballObj.transform, pyramidController.PositionForBlock(currentRow, lastColumn), pyramidController.BlockSize + ballRadius, 90f * (lastColumn == currentColumn ? 1 : -1), animationStepTime, Ease.InCirc));
-            sequence.Append(ballObj.transform.DOLocalMove(finalPosition, animationStepTime / 4).SetEase(Ease.Linear));
+            sequence.Append(ballObj.transform.DOLocalMove(finalPosition, animationStepTime / 4).SetEase(Ease.Linear).OnComplete(() =>
+            {
+                if (lastRow <= pyramidController.Height)
+                    pyramidController.RegisterBlockReached(lastRow, currentColumn);
+            }));
 
             if (i < way.Count - 1)
                 sequence.Append(AddJumpSequence(ballObj.transform, finalPosition, 0.2f, animationStepTime, 4));
@@ -85,6 +96,12 @@ public class BallController : MonoBehaviour
             lastColumn = currentColumn;
             currentRow++;
         }
+
+        sequence.onComplete += () =>
+        {
+            pyramidController.RegisterFinishBlockReached(lastColumn);
+        };
+
         return sequence.SetEase(Ease.Linear);
     }
 

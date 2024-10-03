@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
+using UnityEditor;
 using UnityEngine;
 
 public class PyramidController : MonoBehaviour
@@ -20,19 +22,24 @@ public class PyramidController : MonoBehaviour
     [SerializeField]
     PyramidSettings settings;
 
-    [SerializeField]
-    List<List<GameObject>> blocks = new List<List<GameObject>>();
+    List<List<GameObject>> blocks;
 
-    List<GameObject> finishBlocks = new List<GameObject>();
+    List<GameObject> finishBlocks;
 
     public int Height => settings.height;
     public float BlockSize => settings.blockSize;
+
+    void Start()
+    {
+        GeneratePyramid();
+    }
 
     [ContextMenu("Generate Pyramid")]
     void GeneratePyramid()
     {
         GenerateBlocks();
         GenerateFinishBlocks();
+        EditorUtility.SetDirty(gameObject);
     }
 
     void GenerateFinishBlocks()
@@ -76,6 +83,31 @@ public class PyramidController : MonoBehaviour
     public Vector2 PositionAboveBlock(int row, int column)
     {
         return PositionForBlock(row, column) + Vector2.up * settings.blockSize;
+    }
+
+
+    public void RegisterBlockReached(int row, int column)
+    {
+        PlayInteractAnimation(row, column);
+    }
+    public void RegisterFinishBlockReached(int column)
+    {
+        PlayFinishAnimation(column);
+    }
+
+    void PlayInteractAnimation(int row, int column)
+    {
+        blocks[row][column].GetComponent<SpriteRenderer>().DOKill();
+        blocks[row][column].GetComponent<SpriteRenderer>().DOColor(Color.green, 0.2f).SetLoops(2, LoopType.Yoyo);
+    }
+
+    void PlayFinishAnimation(int column)
+    {
+        finishBlocks[column].transform.DOKill();
+        finishBlocks[column].transform.DOScale(new Vector3(0.375f, 1.25f, 1), 0.2f).SetLoops(2, LoopType.Yoyo);
+
+        finishBlocks[column].GetComponent<SpriteRenderer>().DOKill();
+        finishBlocks[column].GetComponent<SpriteRenderer>().DOColor(Color.green, 0.2f).SetLoops(2, LoopType.Yoyo);
     }
 
 
