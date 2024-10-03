@@ -28,6 +28,9 @@ public class BallController : MonoBehaviour
 
     Sequence currentAnimation = null;
 
+    /// <summary>
+    /// Generates random way for the ball. The way is repsented as a list of bools where true means right turn and false means left turn
+    /// </summary>
     List<bool> GenerateBallWay(int height)
     {
         List<bool> way = new List<bool>();
@@ -38,6 +41,10 @@ public class BallController : MonoBehaviour
         return way;
     }
 
+
+    /// <summary>
+    /// Rotates the object around the center with the given radius and angle
+    /// </summary>
     Tween RotateAround(Transform transform, Vector2 center, float radius, float angle, float duration, Ease ease)
     {
         float currentAngle = 0;
@@ -47,6 +54,9 @@ public class BallController : MonoBehaviour
         });
     }
 
+    /// <summary>
+    /// Adds jump animation
+    /// </summary>
     Sequence AddJumpSequence(Transform transform, Vector2 targetPos, float baseJumpHeight, float duration, int count)
     {
         var sequence = DOTween.Sequence();
@@ -60,6 +70,9 @@ public class BallController : MonoBehaviour
         return sequence.SetEase(Ease.Linear);
     }
 
+    /// <summary>
+    /// Converts ball's way (which represents left or right turn on each pyramid level) into the animation
+    /// </summary>
     Sequence GenerateBallAnimation(List<bool> way, Vector2 startPos, PyramidController pyramidController)
     {
         Sequence sequence = DOTween.Sequence();
@@ -113,7 +126,11 @@ public class BallController : MonoBehaviour
         return sequence.SetEase(Ease.Linear);
     }
 
-    [ContextMenu("Do Random Ball Animation")]
+
+    /// <summary>
+    /// Generates random way for the ball and plays the animation.
+    /// Will do nothing if the previous animation is still playing
+    /// </summary>
     public void DoRandomBallAnimation()
     {
         if (currentAnimation != null && currentAnimation.IsActive() && currentAnimation.IsPlaying())

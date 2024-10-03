@@ -27,11 +27,17 @@ public class SoundController : MonoBehaviour
         audioSource.PlayOneShot(clips[index]);
     }
 
+    /// <summary>
+    /// Mutes the sound
+    /// </summary>
     public void MuteSound()
     {
         audioSource.mute = true;
     }
 
+    /// <summary>
+    /// Unmutes the sound
+    /// </summary>
     public void UnMuteSound()
     {
         audioSource.mute = false;

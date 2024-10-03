@@ -19,6 +19,9 @@ public class UIController : MonoBehaviour, IInitializable
 
     int score = 0;
 
+    /// <summary>
+    /// Adds one score and display it on UI
+    /// </summary>
     public void AddScore()
     {
         score++;
@@ -29,18 +32,27 @@ public class UIController : MonoBehaviour, IInitializable
         scoreText.transform.DOScale(1.2f, 0.2f).SetLoops(2, LoopType.Yoyo);
     }
 
+    /// <summary>
+    /// Resets the score to 0
+    /// </summary>
     public void ResetScoreButtonPressed()
     {
         score = 0;
         scoreText.text = score.ToString();
     }
 
+    /// <summary>
+    /// Mutes the sound
+    /// </summary>
     public void MuteButtonPressed()
     {
         soundController.MuteSound();
         RepaintSoundButton();
     }
 
+    /// <summary>
+    /// Unmutes the sound
+    /// </summary>
     public void UnMuteButtonPressed()
     {
         soundController.UnMuteSound();

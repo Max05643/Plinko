@@ -41,11 +41,13 @@ public class PyramidController : MonoBehaviour
         GeneratePyramid();
     }
 
+    /// <summary>
+    /// Generates the pyramid which consists of blocks (obstacles) and finish blocks
+    /// </summary>
     void GeneratePyramid()
     {
         GenerateBlocks();
         GenerateFinishBlocks();
-        EditorUtility.SetDirty(gameObject);
     }
 
     void GenerateFinishBlocks()
@@ -81,22 +83,35 @@ public class PyramidController : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Converts row and columnt to local position of the block
+    /// </summary>
     public Vector2 PositionForBlock(int row, int column)
     {
         return new Vector2(-row * (settings.spacing.x * 0.5f) + column * settings.spacing.x, -row * settings.spacing.y);
     }
 
+    /// <summary>
+    /// Converts row and columnt to local position above the block
+    /// </summary>
     public Vector2 PositionAboveBlock(int row, int column)
     {
         return PositionForBlock(row, column) + Vector2.up * settings.blockSize;
     }
 
 
+    /// <summary>
+    /// Should be called when ball touches the block
+    /// </summary>
     public void RegisterBlockReached(int row, int column)
     {
         PlayInteractAnimation(row, column);
         soundController.PlayClip(2);
     }
+
+    /// <summary>
+    /// Should be called when ball touches the finish block
+    /// </summary>
     public void RegisterFinishBlockReached(int column)
     {
         PlayFinishAnimation(column);
